@@ -17,6 +17,7 @@ export function MenuPage() {
     <div className="section section-menu">
       <div className="page-head">
         <div>
+          <p className="section-kicker">{locale === "fr" ? "Carte" : "Menu"}</p>
           <h1>{tx("nav", "menu", locale)}</h1>
           <p className="muted">
             {locale === "fr"

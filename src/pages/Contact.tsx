@@ -13,23 +13,28 @@ export function ContactPage() {
   return (
     <div className="section layout-2">
       <div>
+        <p className="section-kicker">{locale === "fr" ? "Coordonnées" : "Get in touch"}</p>
         <h1>{tx("nav", "contact", locale)}</h1>
         <p className="muted">
           {locale === "fr"
             ? "Au pied du château, sur la place Foch."
             : "At the foot of the château, on place Foch."}
         </p>
-        <p style={{ marginTop: "1rem" }}>
+        <p style={{ marginTop: "1.15rem", lineHeight: 1.55 }}>
           <strong>{RESTAURANT.address.street}</strong>
           <br />
           {RESTAURANT.address.postal} {RESTAURANT.address.city}
         </p>
-        <p>
-          <a href={RESTAURANT.telHref}>{RESTAURANT.phoneDisplay}</a>
+        <p style={{ marginTop: "0.5rem" }}>
+          <a href={RESTAURANT.telHref} className="text-link">
+            {RESTAURANT.phoneDisplay}
+          </a>
         </p>
-        <p className="muted">{RESTAURANT.email}</p>
-        <p style={{ marginTop: "0.75rem" }}>
-          <span className={`open-pill ${open ? "is-open" : "is-closed"}`}>
+        <p className="muted" style={{ marginTop: "0.25rem" }}>
+          {RESTAURANT.email}
+        </p>
+        <p style={{ marginTop: "0.85rem" }}>
+          <span className={`open-pill ${open ? "" : "is-closed"}`}>
             {open
               ? locale === "fr"
                 ? "Ouvert maintenant"
@@ -39,18 +44,24 @@ export function ContactPage() {
                 : "Closed now"}
           </span>
         </p>
-        <h2 style={{ marginTop: "1.75rem", fontSize: "1.35rem" }}>
+        <h2 style={{ marginTop: "2rem", fontSize: "1.35rem" }}>
           {locale === "fr" ? "Horaires" : "Hours"}
         </h2>
-        <ul style={{ listStyle: "none", padding: 0, marginTop: "0.5rem" }}>
+        <ul className="hours-list">
           {([2, 3, 4, 5, 6, 0, 1] as const).map((d) => (
-            <li key={d} style={{ display: "flex", justifyContent: "space-between", gap: "1rem", padding: "0.35rem 0", borderBottom: "1px solid var(--line)" }}>
+            <li key={d}>
               <span className="muted">{days[d]}</span>
               <span className="price">{hours[d]}</span>
             </li>
           ))}
         </ul>
-        <a className="btn btn-walnut" style={{ marginTop: "1.25rem" }} href={GOOGLE_PROFILE_URL} target="_blank" rel="noopener noreferrer">
+        <a
+          className="btn btn-walnut"
+          style={{ marginTop: "1.35rem" }}
+          href={GOOGLE_PROFILE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {locale === "fr" ? "Voir sur Google" : "View on Google"}
         </a>
       </div>
