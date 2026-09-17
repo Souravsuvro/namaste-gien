@@ -19,7 +19,11 @@ export function OrderPage() {
   const tomorrow = isoDate(addDays(now, 1));
 
   const [fulfillment, setFulfillment] = useState<"pickup" | "delivery">("pickup");
-  const [date, setDate] = useState(today);
+  const [date, setDate] = useState(() => {
+    // Prefer today if slots remain, else tomorrow (Mondays closed handled by orderSlots)
+    const todaySlots = orderSlots(new Date(`${today}T12:00:00`), "pickup", now);
+    return todaySlots.length ? today : tomorrow;
+  });
   const [time, setTime] = useState("");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState("");
@@ -121,7 +125,7 @@ export function OrderPage() {
               >
                 <div>
                   <strong>{locale === "fr" ? item.nameFr : item.nameEn}</strong>
-                  <div className="muted">{formatEuro(item.priceCents * line.quantity, locale)}</div>
+                  <div className="muted">{formatEuro(item.priceCents * line.quantity)}</div>
                   {blocked && (
                     <span className="badge">{locale === "fr" ? "Indisponible" : "Unavailable"}</span>
                   )}
