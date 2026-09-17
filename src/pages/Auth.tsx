@@ -37,7 +37,8 @@ export function AuthPage() {
   }
 
   return (
-    <div className="section" style={{ maxWidth: 420 }}>
+    <div className="section auth-wrap">
+      <div className="auth-panel">
       <h1>{tx("auth", "welcome", locale)}</h1>
       <p className="muted">
         {asOwner
@@ -89,12 +90,13 @@ export function AuthPage() {
         </button>
       </p>
       <p className="muted" style={{ marginTop: "1rem", fontSize: "0.8rem" }}>{tx("auth", "demoNote", locale)}</p>
-      <p className="muted" style={{ marginTop: "0.5rem", fontSize: "0.8rem"}}>
+      <p className="muted auth-footnote">
         {locale === "fr" ? "Propriétaire :" : "Owner:"}{" "}
-        <Link to="/auth?role=owner" style={{ textDecoration: "underline" }}>
+        <Link to="/auth?role=owner" className="text-link">
           owner@namaste-gien.fr
         </Link>
       </p>
+      </div>
     </div>
   );
 }

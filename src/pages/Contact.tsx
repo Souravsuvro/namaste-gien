@@ -29,7 +29,7 @@ export function ContactPage() {
         </p>
         <p className="muted">{RESTAURANT.email}</p>
         <p style={{ marginTop: "0.75rem" }}>
-          <span className={`badge ${open ? "" : ""}`}>
+          <span className={`open-pill ${open ? "is-open" : "is-closed"}`}>
             {open
               ? locale === "fr"
                 ? "Ouvert maintenant"
@@ -54,8 +54,8 @@ export function ContactPage() {
           {locale === "fr" ? "Voir sur Google" : "View on Google"}
         </a>
       </div>
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <iframe title="map" src={map} style={{ width: "100%", height: 320, border: 0, filter: "grayscale(0.35)" }} loading="lazy" />
+      <div className="card map-card">
+        <iframe title="map" src={map} className="map-iframe" loading="lazy" />
       </div>
     </div>
   );
