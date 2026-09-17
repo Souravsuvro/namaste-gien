@@ -12,7 +12,13 @@ export function ReservePage() {
   const navigate = useNavigate();
   const now = useMemo(() => parisNow(), []);
   const dates = useMemo(() => nextOpenDates(now, 10), [now]);
-  const [date, setDate] = useState(dates[0] ?? "");
+  const initialDate = useMemo(() => {
+    for (const d of dates) {
+      if (reservationSlots(new Date(`${d}T12:00:00`), now).length > 0) return d;
+    }
+    return dates[0] ?? "";
+  }, [dates, now]);
+  const [date, setDate] = useState(initialDate);
   const [time, setTime] = useState("");
   const [party, setParty] = useState(2);
   const [name, setName] = useState(user?.name ?? "");
@@ -22,8 +28,9 @@ export function ReservePage() {
   const [slots, setSlots] = useState<string[]>([]);
 
   useEffect(() => {
-    setTime("");
-    setSlots(reservationSlots(new Date(`${date}T12:00:00`), now));
+    const next = reservationSlots(new Date(`${date}T12:00:00`), now);
+    setSlots(next);
+    setTime((prev) => (prev && next.includes(prev) ? prev : next[0] ?? ""));
   }, [date, now]);
 
   function onSubmit(e: FormEvent) {
