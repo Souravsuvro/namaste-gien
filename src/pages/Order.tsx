@@ -13,6 +13,7 @@ export function OrderPage() {
   const placeOrder = useApp((s) => s.placeOrder);
   const user = useApp((s) => s.user);
   const unavailable = useApp((s) => s.unavailableIds);
+  const kitchenPaused = useApp((s) => s.kitchenPaused);
   const navigate = useNavigate();
   const now = useMemo(() => parisNow(), []);
   const today = isoDate(now);
@@ -77,6 +78,10 @@ export function OrderPage() {
       setErr(locale === "fr" ? "Téléphone français invalide." : "Invalid French phone.");
       return;
     }
+    if (result.error === "paused") {
+      setErr(locale === "fr" ? "Cuisine temporairement fermée aux commandes." : "Kitchen temporarily closed for orders.");
+      return;
+    }
     if (result.error === "min") {
       setErr(locale === "fr" ? "Minimum livraison 18 €." : "Delivery minimum €18.");
       return;
@@ -107,6 +112,13 @@ export function OrderPage() {
 
   return (
     <div className="section layout-2">
+      {kitchenPaused && (
+        <div className="alert" style={{ gridColumn: "1 / -1", marginBottom: "0.5rem" }}>
+          {locale === "fr"
+            ? "La cuisine est temporairement fermée aux commandes en ligne."
+            : "The kitchen is temporarily closed for online orders."}
+        </div>
+      )}
       <div>
         <h1>{tx("cart", "title", locale)}</h1>
         <ul style={{ listStyle: "none", padding: 0 }}>
@@ -212,7 +224,7 @@ export function OrderPage() {
             <Link to="/auth">{tx("nav", "signIn", locale)}</Link>
           </p>
         )}
-        <button type="submit" className="btn btn-primary" disabled={busy || !user || !!user.deletedAt}>
+        <button type="submit" className="btn btn-primary" disabled={busy || kitchenPaused || !user || !!user.deletedAt}>
           {busy ? tx("common", "loading", locale) : `${tx("payment", "pay", locale)} ${formatEuro(total, locale)}`}
         </button>
       </form>
