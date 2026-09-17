@@ -125,7 +125,7 @@ export function OrderPage() {
               >
                 <div>
                   <strong>{locale === "fr" ? item.nameFr : item.nameEn}</strong>
-                  <div className="muted">{formatEuro(item.priceCents * line.quantity)}</div>
+                  <div className="muted">{formatEuro(item.priceCents * line.quantity, locale)}</div>
                   {blocked && (
                     <span className="badge">{locale === "fr" ? "Indisponible" : "Unavailable"}</span>
                   )}
