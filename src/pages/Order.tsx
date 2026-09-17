@@ -20,7 +20,6 @@ export function OrderPage() {
 
   const [fulfillment, setFulfillment] = useState<"pickup" | "delivery">("pickup");
   const [date, setDate] = useState(() => {
-    // Prefer today if slots remain, else tomorrow (Mondays closed handled by orderSlots)
     const todaySlots = orderSlots(new Date(`${today}T12:00:00`), "pickup", now);
     return todaySlots.length ? today : tomorrow;
   });
@@ -91,10 +90,15 @@ export function OrderPage() {
 
   if (!cart.length) {
     return (
-      <div className="section">
+      <div className="section empty-state">
         <h1>{tx("cart", "title", locale)}</h1>
         <p className="muted">{tx("cart", "empty", locale)}</p>
-        <Link to="/menu" className="btn btn-primary" style={{ marginTop: "1rem" }}>
+        <p className="muted" style={{ marginTop: "0.5rem" }}>
+          {locale === "fr"
+            ? "Parcourez la carte et ajoutez vos plats préférés."
+            : "Browse the menu and add your favourites."}
+        </p>
+        <Link to="/menu" className="btn btn-primary">
           {tx("nav", "menu", locale)}
         </Link>
       </div>
