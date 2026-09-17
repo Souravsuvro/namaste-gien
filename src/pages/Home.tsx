@@ -27,7 +27,7 @@ export function Home() {
           <p>{tx("hero", "lead", locale)}</p>
           <div className="hero-actions">
             <Link to="/order" className="btn btn-primary">{tx("hero", "order", locale)}</Link>
-            <Link to="/reserve" className="btn btn-outline" style={{ color: "var(--cream)", boxShadow: "inset 0 0 0 1px rgba(250,246,239,0.4)" }}>
+            <Link to="/reserve" className="btn btn-hero-outline">
               {tx("hero", "reserve", locale)}
             </Link>
           </div>
@@ -57,15 +57,17 @@ export function Home() {
         <h2>{locale === "fr" ? "Plats signatures" : "Signature dishes"}</h2>
         <div className="grid-menu" style={{ marginTop: "1.25rem" }}>
           {signatures.map((item) => (
-            <article key={item.id} className="card">
-              <h3>{locale === "fr" ? item.nameFr : item.nameEn}</h3>
-              <p className="muted">{locale === "fr" ? item.descFr : item.descEn}</p>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem", marginTop: "0.75rem" }}>
-                <p className="price" style={{ margin: 0 }}>{formatEuro(item.priceCents, locale)}</p>
+            <article key={item.id} className="card dish-card">
+              <div className="dish-card-top">
+                <h3>{locale === "fr" ? item.nameFr : item.nameEn}</h3>
+                <span className="price">{formatEuro(item.priceCents, locale)}</span>
+              </div>
+              <p className="muted dish-desc">{locale === "fr" ? item.descFr : item.descEn}</p>
+              <div className="dish-card-actions">
                 {unavailable.includes(item.id) ? (
                   <span className="badge">{locale === "fr" ? "Épuisé" : "Sold out"}</span>
                 ) : (
-                  <button type="button" className="btn btn-primary" style={{ minHeight: "2.2rem" }} onClick={() => addToCart(item.id)}>
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => addToCart(item.id)}>
                     {tx("cart", "add", locale)}
                   </button>
                 )}

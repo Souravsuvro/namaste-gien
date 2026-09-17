@@ -151,6 +151,27 @@ export function SiteLayout() {
       <main id="main" className="main">
         <Outlet />
       </main>
+      {count > 0 && !loc.pathname.startsWith("/order") && (
+        <div className="sticky-cart-bar" role="region" aria-label={locale === "fr" ? "Panier" : "Basket"}>
+          <div className="sticky-cart-inner">
+            <div>
+              <strong>{count}</strong>{" "}
+              <span className="muted">
+                {locale === "fr"
+                  ? count > 1
+                    ? "articles"
+                    : "article"
+                  : count > 1
+                    ? "items"
+                    : "item"}
+              </span>
+            </div>
+            <Link to="/order" className="btn btn-primary btn-sm">
+              {locale === "fr" ? "Voir le panier" : "View basket"}
+            </Link>
+          </div>
+        </div>
+      )}
       <footer className="footer">
         <div className="footer-grid">
           <div>
