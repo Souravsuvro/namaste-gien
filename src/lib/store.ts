@@ -73,8 +73,8 @@ type AppState = {
   orders: Order[];
   reservations: Reservation[];
   unavailableIds: string[];
+  kitchenPaused: boolean;
   toasts: Toast[];
-  // auth
   signInEmail: (
     email: string,
     password: string,
@@ -86,13 +86,11 @@ type AppState = {
   updateProfile: (patch: { name?: string; phone?: string }) => void;
   deleteAccount: () => void;
   restoreAccount: () => void;
-  // cart
   addToCart: (itemId: string) => void;
   setQty: (key: string, qty: number) => void;
   clearCart: () => void;
-  // menu
   toggleItemAvailable: (itemId: string) => void;
-  // orders
+  setKitchenPaused: (paused: boolean) => void;
   placeOrder: (input: {
     fulfillment: "pickup" | "delivery";
     phone: string;
@@ -103,7 +101,6 @@ type AppState = {
   }) => { order?: Order; error?: string };
   updateOrderStatus: (id: string, status: OrderStatus) => void;
   cancelOrder: (id: string) => void;
-  // reservations
   bookTable: (input: {
     date: string;
     time: string;
@@ -112,11 +109,7 @@ type AppState = {
     phone: string;
     notes?: string;
   }) => { reservation?: Reservation; error?: string };
-  updateReservationStatus: (
-    id: string,
-    status: Reservation["status"],
-  ) => void;
-  // toasts
+  updateReservationStatus: (id: string, status: Reservation["status"]) => void;
   pushToast: (message: string, tone?: "ok" | "err") => void;
   dismissToast: (id: string) => void;
 };
@@ -131,7 +124,6 @@ function code() {
 
 const OWNER_EMAIL = "owner@namaste-gien.fr";
 
-/** Stable id from email so re-login keeps the same customer record feel. */
 function userIdFromEmail(email: string) {
   let h = 0;
   for (let i = 0; i < email.length; i++) h = (h * 31 + email.charCodeAt(i)) >>> 0;
@@ -146,6 +138,7 @@ export const useApp = create<AppState>()(
       orders: [],
       reservations: [],
       unavailableIds: [],
+      kitchenPaused: false,
       toasts: [],
 
       pushToast: (message, tone = "ok") => {
@@ -258,10 +251,19 @@ export const useApp = create<AppState>()(
         });
       },
 
+      setKitchenPaused: (paused) => {
+        set({ kitchenPaused: paused });
+        get().pushToast(
+          paused ? "Cuisine en pause / Kitchen paused" : "Cuisine ouverte / Kitchen open",
+          paused ? "err" : "ok",
+        );
+      },
+
       placeOrder: (input) => {
-        const { cart, user, unavailableIds } = get();
+        const { cart, user, unavailableIds, kitchenPaused } = get();
         if (!cart.length) return { error: "empty" };
         if (!user || user.deletedAt) return { error: "auth" };
+        if (kitchenPaused) return { error: "paused" };
         const phone = normalizeFrPhone(input.phone);
         if (!phone) return { error: "phone" };
         if (cart.some((l) => unavailableIds.includes(l.itemId))) {
@@ -364,6 +366,7 @@ export const useApp = create<AppState>()(
         orders: s.orders,
         reservations: s.reservations,
         unavailableIds: s.unavailableIds,
+        kitchenPaused: s.kitchenPaused,
       }),
     },
   ),
@@ -380,7 +383,6 @@ export function cartSubtotal(cart: CartLine[]) {
   }, 0);
 }
 
-/** Order progress steps for tracking UI */
 export const ORDER_FLOW: OrderStatus[] = [
   "received",
   "preparing",
